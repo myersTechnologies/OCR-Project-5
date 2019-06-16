@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.cleanup.todoc.db.TaskDataBase;
 import com.cleanup.todoc.ui.MainActivity;
 
 import org.junit.Rule;

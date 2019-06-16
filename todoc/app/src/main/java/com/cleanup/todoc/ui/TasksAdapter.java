@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cleanup.todoc.R;
-import com.cleanup.todoc.db.TaskDataBase;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
@@ -119,7 +118,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
         private final DeleteTaskListener deleteTaskListener;
 
         Cursor cursor;
-        TaskDataBase taskDataBase;
 
         /**
          * Instantiates a new TaskViewHolder.
@@ -131,8 +129,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
             super(itemView);
 
             this.deleteTaskListener = deleteTaskListener;
-
-            taskDataBase = new TaskDataBase(itemView.getContext());
 
             imgProject = itemView.findViewById(R.id.img_project);
             lblTaskName = itemView.findViewById(R.id.lbl_task_name);
@@ -156,8 +152,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
          * @param task the task to bind in the item view
          */
         void bind(Task task) {
-
-
 
             lblTaskName.setText(task.getName());
             imgDelete.setTag(task);

@@ -1,5 +1,6 @@
 package com.cleanup.todoc.ui;
 
+import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -20,15 +21,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cleanup.todoc.R;
-import com.cleanup.todoc.db.TaskDataBase;
+import com.cleanup.todoc.db.dao.SaveTaskDatabase;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-
-import icepick.Icepick;
+import java.util.List;
 
 /**
  * <p>Home activity of the application which is displayed when the user opens the app.</p>
@@ -92,12 +94,11 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @SuppressWarnings("NullableProblems")
     @NonNull
     private TextView lblNoTasks;
-
-    private TaskDataBase db;
-
     private int maxId;
 
     private Cursor cursor;
+
+    private SaveTaskDatabase database;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -119,24 +120,20 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             }
         });
 
-        getDataBaseTask();
+        getTaskDataBase();
 
     }
 
-    public void getDataBaseTask(){
-        db = new TaskDataBase(this);
-        maxId = db.getMaxID();
-        cursor = db.getAllTasks();
-        if (cursor != null && cursor.getCount() > 0) {
-            while (cursor.moveToNext()) {
-                long id = cursor.getLong(0);
-                long projectId = cursor.getLong(1);
-                String name = cursor.getString(2);
-                long dateTime = cursor.getLong(3);
-                Task newTask = new Task(id, projectId, name, dateTime);
-                tasks.add(newTask);
+    public void getTaskDataBase(){
+        try {
+            database = SaveTaskDatabase.getInstance(this);
+            database.projectDao().createProject(Project.getAllProjects());
+            database.taskDao().getTasks();
+            List<Task> task = database.taskDao().getTasks();
+            for (int i = 0; i <= task.size(); i++) {
+                tasks.add(task.get(i));
             }
-        }
+        } catch (IndexOutOfBoundsException e){}
         updateTasks();
     }
 
@@ -168,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @Override
     public void onDeleteTask(Task task) {
         tasks.remove(task);
-        db.deleteSelectedTask(task.getId());
+        database.taskDao().deleteTask(task);
         updateTasks();
     }
 
@@ -214,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
                 dialogInterface.dismiss();
             }
         }
-        // If dialog is aloready closed
+        // If dialog is already closed
         else {
             dialogInterface.dismiss();
         }
@@ -241,10 +238,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
      */
     private void addTask(@NonNull Task task) {
         tasks.add(task);
-        boolean result = db.insertTaskData(task);
-        if (result){
-            Toast.makeText(this, "added", Toast.LENGTH_SHORT).show();
-        }
+        database.taskDao().insetTask(task);
         updateTasks();
     }
 

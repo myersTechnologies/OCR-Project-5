@@ -1,5 +1,9 @@
 package com.cleanup.todoc.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -10,15 +14,20 @@ import java.util.Comparator;
  *
  * @author Gaëtan HERFRAY
  */
+@Entity(foreignKeys = @ForeignKey(entity = Project.class,
+        parentColumns = "id", childColumns = "task_project_id"))
 public class Task {
     /**
      * The unique identifier of the task
      */
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "task_id")
     private long id;
 
     /**
      * The unique identifier of the project associated to the task
      */
+    @ColumnInfo(name = "task_project_id", index = true)
     private long projectId;
 
     /**
@@ -26,12 +35,14 @@ public class Task {
      */
     // Suppress warning because setName is called in constructor
     @SuppressWarnings("NullableProblems")
+    @ColumnInfo(name = "task_name")
     @NonNull
     private String name;
 
     /**
      * The timestamp when the task has been created
      */
+    @ColumnInfo(name = "time_creation_task")
     private long creationTimestamp;
 
     /**
@@ -157,4 +168,9 @@ public class Task {
     public long getCreationTimestamp(){
         return creationTimestamp;
     }
+
+    public long getProjectId(){
+        return projectId;
+    }
+
 }

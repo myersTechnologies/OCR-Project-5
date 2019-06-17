@@ -1,13 +1,10 @@
 package com.cleanup.todoc.db.dao;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
-import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
-import android.content.ContentValues;
 import android.content.Context;
-import android.support.annotation.NonNull;
+
 
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
@@ -29,6 +26,11 @@ public abstract class SaveTaskDatabase extends RoomDatabase {
             }
         }
         return INSTANCE;
+    }
+
+    public int setMaxIndex(){
+        int max = taskDao().getTasks().size();
+        return max + 1;
     }
 
 }

@@ -1,9 +1,6 @@
 package com.cleanup.todoc.db.dao;
 
-import android.app.Instrumentation;
-import android.arch.core.executor.testing.InstantTaskExecutorRule;
 import android.arch.persistence.room.Room;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -17,10 +14,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
-public class TaskDaoTest {
+public class DaoTest {
     SaveTaskDatabase database;
     MainActivity main;
 
@@ -35,12 +34,21 @@ public class TaskDaoTest {
         main = mActivityTestRule.getActivity();
         this.database = Room.inMemoryDatabaseBuilder(main,
                 SaveTaskDatabase.class).allowMainThreadQueries().build();
-        database.projectDao().createProject(Project.getAllProjects());
+        database.projectDao().createProjectsTable(Project.getAllProjects());
     }
 
     @After
     public void closeDb(){
         database.close();
+    }
+
+    @Test
+    public void checkIfProjectDaoTableContainsProjects(){
+        database.projectDao().createProjectsTable(Project.getAllProjects());
+        List<Project> projects = database.projectDao().getAllProjects();
+        assertTrue(projects.get(0).getName().equals(Project.getProjectById(1L).getName()));
+        assertTrue(projects.get(1).getName().equals(Project.getProjectById(2L).getName()));
+        assertTrue(projects.get(2).getName().equals(Project.getProjectById(3L).getName()));
     }
 
     @Test

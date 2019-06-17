@@ -1,8 +1,6 @@
 package com.cleanup.todoc.ui;
 
-import android.arch.persistence.room.Room;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,16 +16,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.db.dao.SaveTaskDatabase;
 import com.cleanup.todoc.model.Project;
 import com.cleanup.todoc.model.Task;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -96,8 +91,6 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     private TextView lblNoTasks;
     private int maxId;
 
-    private Cursor cursor;
-
     private SaveTaskDatabase database;
 
     @Override
@@ -125,15 +118,15 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     }
 
     public void getTaskDataBase(){
-        try {
             database = SaveTaskDatabase.getInstance(this);
-            database.projectDao().createProject(Project.getAllProjects());
+            database.projectDao().createProjectsTable(Project.getAllProjects());
             database.taskDao().getTasks();
             List<Task> task = database.taskDao().getTasks();
+            if (!task.isEmpty()){
             for (int i = 0; i <= task.size(); i++) {
                 tasks.add(task.get(i));
             }
-        } catch (IndexOutOfBoundsException e){}
+        }
         updateTasks();
     }
 
@@ -193,6 +186,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             // If both project and name of the task have been set
             else if (taskProject != null) {
                 // TODO: Replace this by id of persisted task
+                maxId = database.setMaxIndex();
                 long id = (long) maxId;
 
                 Task task = new Task(

@@ -1,7 +1,6 @@
 package com.cleanup.todoc.ui;
 
 import android.content.res.ColorStateList;
-import android.database.Cursor;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cleanup.todoc.R;
 import com.cleanup.todoc.model.Project;
@@ -117,7 +115,6 @@ public class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.TaskViewHold
          */
         private final DeleteTaskListener deleteTaskListener;
 
-        Cursor cursor;
 
         /**
          * Instantiates a new TaskViewHolder.

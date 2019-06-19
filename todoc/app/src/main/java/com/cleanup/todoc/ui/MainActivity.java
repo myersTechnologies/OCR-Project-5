@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
             database.taskDao().getTasks();
             List<Task> task = database.taskDao().getTasks();
             if (!task.isEmpty()){
-            for (int i = 0; i <= task.size(); i++) {
+            for (int i = 0; i < task.size(); i++) {
                 tasks.add(task.get(i));
             }
         }
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements TasksAdapter.Dele
     @Override
     public void onDeleteTask(Task task) {
         tasks.remove(task);
-        database.taskDao().deleteTask(task);
+        database.taskDao().deleteTask(task.getId());
         updateTasks();
     }
 

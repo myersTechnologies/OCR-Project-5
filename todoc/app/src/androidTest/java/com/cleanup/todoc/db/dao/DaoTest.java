@@ -63,7 +63,7 @@ public class DaoTest {
         this.database.taskDao().insetTask(TASK_DEMO);
         Task task = this.database.taskDao().getTasks().get(0);
         assertTrue(task.getName().equals(TASK_DEMO.getName()) && task.getId() == TASK_ID);
-        this.database.taskDao().deleteTask(task);
+        this.database.taskDao().deleteTask(task.getId());
         assertTrue(this.database.taskDao().getTasks().isEmpty());
     }
 }
